@@ -8,19 +8,19 @@
     </style>
   </head>
   <body>
-    <div id="login">
+    <div id="login-zone">
         <form id="login-form">
-            <input id="login-name" type="text">
-            <button>Send</button>
+            <input id="login-name" type="text" autocomplete="off">
+            <button>Login</button>
+            <p id="error-p" style="color: red;"></p>
         </form>
     </div>
-    <div id="chat-zone">
+    <div id="chat-zone" style="display: none;">
         <ul id="messages"></ul>
         <form id="form" action="">
           <input id="input" autocomplete="off" /><button>Send</button>
         </form>
     </div>
-
 
     <script>
         const getUserRooms = async (user_name) => {
@@ -43,13 +43,34 @@
 
         const login_form = document.getElementById("login-form");
         const login_name = document.getElementById("login-name");
+        const login_zone = document.getElementById("login-zone");
+        const chat_zone = document.getElementById("chat-zone");
+        const error_p = document.getElementById("error-p");
 
-        var user_name = "quoc";
-        var rooms_id = "66fcf44648a77dca27512027";
+        var user_name = "";
+        var rooms_id = [];
         var origin = "http://localhost:3000";
 
         login_form.addEventListener("submit", (e) => {
             e.preventDefault();
+            if(login_name) {
+                getUserRooms(login_name.value)
+                    .then((rooms) => {
+                        if(!rooms.error) {
+                            rooms_id = rooms;
+                            user_name = login_name.value;
+                            login_name.value = "";
+                            console.log(rooms_id);
+                            login_form.style.display = "none";
+                            chat_zone.style.display = "block";
+                            chatScript();
+                        } else {
+                            console.error(rooms);
+                            error_p.innerText = rooms.error;
+                            login_name.value = "";
+                        }
+                    })
+            }
         })
 
     </script>
@@ -62,6 +83,18 @@
             const input = document.getElementById("input");
             const ul = document.getElementById("messages");
 
+            // render room 1 messages
+            getRoomMessages(rooms_id[0])
+                .then((messages) => {
+                    messages.forEach(message => {
+                        const li = document.createElement("li");
+                        if(message["sender-name"] == user_name) {
+                            li.style.color = "green";
+                        }
+                        li.textContent = message.data;
+                        ul.appendChild(li); 
+                    });
+                })
 
             socket.on("chat message", (message) => {
                 const li = document.createElement("li");
@@ -76,12 +109,12 @@
                 console.log("Outgoing:", eName, args);
             })
 
-
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 if(input.value) {
                     socket.emit("chat message", input.value);
                     const li = document.createElement("li");
+                    li.style.color = "green";
                     li.textContent = input.value;
                     input.value = "";
                     ul.appendChild(li);

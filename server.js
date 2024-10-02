@@ -20,7 +20,12 @@ app.get("/room-in/:name", (req, res) => {
     const name = req.params.name;
     getUser(name)
         .then((user) => {
-            res.send(user["room-in"]);
+            if(user) {
+                res.send(user["room-in"]);
+            } else {
+                res.send({error: "user not found"});
+            }
+
         })
 });
 app.get("/room-messages/:room_id", (req, res) => {
@@ -34,6 +39,7 @@ app.get("/room-messages/:room_id", (req, res) => {
 
 
 const { socket_handler } = require("./socket-handler");
+const { error } = require("node:console");
 io.on("connection", socket_handler);
 
 
