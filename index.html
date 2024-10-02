@@ -8,42 +8,86 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+    <div id="login">
+        <form id="login-form">
+            <input id="login-name" type="text">
+            <button>Send</button>
+        </form>
+    </div>
+    <div id="chat-zone">
+        <ul id="messages"></ul>
+        <form id="form" action="">
+          <input id="input" autocomplete="off" /><button>Send</button>
+        </form>
+    </div>
 
+
+    <script>
+        const getUserRooms = async (user_name) => {
+            const responce = await fetch(`${origin}/room-in/${user_name}`)
+            if(!responce.ok) {
+                throw Error("responce not ok");
+            }
+            const rooms = await responce.json();
+            return rooms;
+        }
+
+        const getRoomMessages = async (room_id) => {
+            const responce = await fetch(`${origin}/room-messages/${room_id}`)
+            if(!responce.ok) {
+                throw Error("responce not ok");
+            }
+            const messages = await responce.json();
+            return messages;
+        }
+
+        const login_form = document.getElementById("login-form");
+        const login_name = document.getElementById("login-name");
+
+        var user_name = "quoc";
+        var rooms_id = "66fcf44648a77dca27512027";
+        var origin = "http://localhost:3000";
+
+        login_form.addEventListener("submit", (e) => {
+            e.preventDefault();
+        })
+
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        function chatScript() {
+            const socket = io();
 
-        const form = document.getElementById("form");
-        const input = document.getElementById("input");
-        const ul = document.getElementById("messages");
+            const form = document.getElementById("form");
+            const input = document.getElementById("input");
+            const ul = document.getElementById("messages");
 
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            if(input.value) {
-                socket.emit("chat message", input.value);
+
+            socket.on("chat message", (message) => {
                 const li = document.createElement("li");
-                li.textContent = input.value;
-                input.value = "";
+                li.textContent = message;
                 ul.appendChild(li);
-            }
-        });
+            });
 
-        socket.on("chat message", (message) => {
-            const li = document.createElement("li");
-            li.textContent = message;
-            ul.appendChild(li);
-        });
+            socket.onAny((eName, ...args) => {
+                console.log("Incomming", eName, args);
+            })
+            socket.onAnyOutgoing((eName, ...args) => {
+                console.log("Outgoing:", eName, args);
+            })
 
-        socket.onAny((eName, ...args) => {
-            console.log("Incomming", eName, args);
-        })
-        socket.onAnyOutgoing((eName, ...args) => {
-            console.log("Outgoing:", eName, args);
-        })
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if(input.value) {
+                    socket.emit("chat message", input.value);
+                    const li = document.createElement("li");
+                    li.textContent = input.value;
+                    input.value = "";
+                    ul.appendChild(li);
+                }
+            });
+        }
     </script>
   </body>
 </html>
