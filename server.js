@@ -5,42 +5,37 @@ const { createServer } = require("node:http");
 const { join } = require("node:path");
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const server = createServer(app);
 const io = new Server(server);
 
 const PORT = process.env.SERVER_PORT || 3000
 
 app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "index.html"));
+    res.sendFile(join(__dirname, "./client/index.html"));
+});
+app.get("/socket-config.js", (req, res) => {
+    res.sendFile(join(__dirname, "./client/socket-config.js"));
 });
 
 
-const { getUser, getRoom } = require("./database-handler");
-app.get("/room-in/:name", (req, res) => {
-    const name = req.params.name;
-    getUser(name)
-        .then((user) => {
-            if(user) {
-                res.send(user["room-in"]);
-            } else {
-                res.send({error: "user not found"});
-            }
-
-        })
-});
-app.get("/room-messages/:room_id", (req, res) => {
-    const room_id = req.params.room_id;
-    getRoom(room_id)
-        .then((room) => {
-            res.send(room.messages);
-        })
-});
-
+const { load_user_controller, load_rooms_controller, load_admin_controller } = require("./controler");
+app.post("/load-admin", load_admin_controller);
+app.get("/load-room/:room_id", load_rooms_controller);
+app.get("/load-user/:user_id", load_user_controller);
 
 
 const { socket_handler } = require("./socket-handler");
-const { error } = require("node:console");
 io.on("connection", socket_handler);
+
+
+const { MGclient } = require("./database-handler");
+process.on("SIGINT", async () => {
+    console.log("Close MongoDB connection...");
+    await MGclient.close();
+    process.exit(0);
+});
 
 
 server.listen(PORT, () => {

@@ -1,5 +1,16 @@
-GET http://localhost:3000/room-in/quoc
+POST http://localhost:3000/load-admin
+Content-Type: application/json
+
+{
+    "name": "nguyen van a",
+    "password": "nguyenvana"
+}
+
 ###
-GET http://localhost:3000/socket.io/socket.io.js
+GET http://localhost:3000/load-room/66fe5298a9353691ce7065d2
+
 ###
-GET http://localhost:3000/room-messages/66fcf44648a77dca27512027
+GET http://localhost:3000/load-user/66fe5187a9353691ce7065ce
+
+###
+GET http://localhost:3000

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Socket.IO chat</title>
+  </head>
+  <body>
+    <div id="login-zone">
+        <form id="login-form">
+            <input id="login-name" type="text" autocomplete="off">
+            <input id="login-password" type="password">
+            <button>Login</button>
+            <p id="error-message" style="color: red;"></p>
+        </form>
+    </div>
+
+    <div id="chat-zone">
+        <ul id="messages"></ul>
+        <form id="chat-form">
+          <input id="chat-input" autocomplete="off" /><button>Send</button>
+        </form>
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="socket-config.js"></script>
+    <script>
+        const login_zone = document.getElementById("login-zone");
+        const login_form = document.getElementById("login-form");
+        const login_name = document.getElementById("login-name");
+        const login_password = document.getElementById("login-password");
+        const error_message = document.getElementById("error-message");
+
+        const chat_zone = document.getElementById("chat-zone");
+        const messages = document.getElementById("messages");
+        const chat_form = document.getElementById("chat-form");
+        const chat_input = document.getElementById("chat-input");
+        const logout_btn = document.getElementById("logout-btn");
+
+        chat_zone.style.display = "none";
+
+        let admin = {};
+        let rooms_id = [];
+        let origin = "http://localhost:3000";
+        let socket = {};
+
+        const chat_on = () => {
+            if(admin) {
+                chat_zone.style.display = "block";
+                login_zone.style.display = "none";
+
+                socket = io();
+
+                chat_form.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    if(chat_input.value) {
+                        socket.emit("chat message", chat_input.value);
+                        const li = document.createElement("li");
+                        li.style.color = "green";
+                        li.textContent = chat_input.value;
+                        chat_input.value = "";
+                        messages.appendChild(li);
+                    }
+                });
+
+                socket.on("chat message", (message) => {
+                    const li = document.createElement("li");
+                    li.textContent = message;
+                    messages.appendChild(li);
+                });
+
+                
+                socket.onAny((eName, ...args) => {
+                    console.log("Incomming", eName, args);
+                })
+                socket.onAnyOutgoing((eName, ...args) => {
+                    console.log("Outgoing:", eName, args);
+                })
+            }
+
+        }
+        const chat_off = () => {
+            admin = {};
+            rooms_id = [];
+            messages.innerHTML = "";
+            chat_zone.style.display = "none";
+            login_zone.style.display = "block";
+            login_name.value = "";
+            login_password.value = "";
+            error_message.innerText = "";
+
+            socket.disconnect();
+            socket = {};
+        }
+
+        login_form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if(login_name.value && login_password.value) {
+                const name = login_name.value;
+                const password = login_password.value;
+
+                const data = {name, password};
+
+                fetch('http://localhost:3000/load-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    } else {
+                        return response.json();
+                    }
+                }).then(data => {
+                    if(!data.error) {
+                        admin = data;
+                        chat_on();
+                    } else {
+                        error_message.innerText = data.error;
+                    }
+                    console.log(data);
+                })
+
+            }
+        })
+     
+        logout_btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            chat_off();
+        });
+
+        chat_form.addEventListener("submit", (e) => {
+            e.preventDefault();
+        })
+
+
+    </script>
+  </body>
+</html>

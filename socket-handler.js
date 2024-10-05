@@ -6,10 +6,12 @@ const socket_handler = (socket) => {
         console.log("A user had disconnected.");
     });
 
-    socket.on('chat message', async (message) => {
+    socket.on("chat message", async (message) => {
         socket.to("room-A").emit("chat message", message);
     });
 
+
+    
     socket.onAny((eName, ...args) => {
         console.log("Incomming", eName, args);
     })
