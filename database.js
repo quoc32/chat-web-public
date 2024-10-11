@@ -46,10 +46,22 @@ async function loadRoom(room_id) {
         return room;
     }
 }
+async function add_user(user) {
+    try {
+        const db = MGclient.db(DATABASE_NAME);
+        const users = db.collection("Users");
+        const res = await users.insertOne(user);
+        return res;
+    } catch(err) {
+        console.log("Loi insert user:", err);
+        return {error: true};
+    }
+}
 
 module.exports = {
     loadUser,
     loadRoom,
     loadUser_byId,
+    add_user,
     MGclient,
 }

@@ -10,131 +10,104 @@
             <input id="login-name" type="text" autocomplete="off">
             <input id="login-password" type="password">
             <button>Login</button>
-            <p id="error-message" style="color: red;"></p>
+            <p id="login-error-message" style="color: red;"></p>
         </form>
     </div>
 
-    <div id="chat-zone">
-        <ul id="messages"></ul>
-        <form id="chat-form">
-          <input id="chat-input" autocomplete="off" /><button>Send</button>
-        </form>
+    <div id="chat-zone" style="display: none;">
+        <div id="chat-room">
+            <ul id="messages"></ul>
+            <form id="chat-form">
+              <input id="chat-input" autocomplete="off" /><button>Send</button>
+            </form>
+        </div>
+        <ul id="rooms-list"></ul>
         <button id="logout-btn">Logout</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="socket-config.js"></script>
-    <script>
+    <script type="module" src="socket.js"></script>
+    <script type="module" src="load.js"></script>
+    <script type="module" src="render.js"></script>
+    <script type="module" src="chat-on.js"></script>
+    <script type="module" src="chat-off.js"></script>
+
+    <script type="module">
+        import { socket_config } from "./socket.js";
+        import { load_admin, load_room, load_user, load_client_info } from "./load.js";
+        import { render_messages } from "./render.js";
+
         const login_zone = document.getElementById("login-zone");
         const login_form = document.getElementById("login-form");
         const login_name = document.getElementById("login-name");
-        const login_password = document.getElementById("login-password");
-        const error_message = document.getElementById("error-message");
+        const login_pw = document.getElementById("login-password");
+        const login_err_msg = document.getElementById("login-error-message");
 
         const chat_zone = document.getElementById("chat-zone");
-        const messages = document.getElementById("messages");
+        const msgs = document.getElementById("messages");
         const chat_form = document.getElementById("chat-form");
-        const chat_input = document.getElementById("chat-input");
+        const chat_inp = document.getElementById("chat-input");
         const logout_btn = document.getElementById("logout-btn");
+        const rms_lst = document.getElementById("rooms-list");
 
-        chat_zone.style.display = "none";
-
-        let admin = {};
-        let rooms_id = [];
-        let origin = "http://localhost:3000";
-        let socket = {};
-
-        const chat_on = () => {
-            if(admin) {
-                chat_zone.style.display = "block";
-                login_zone.style.display = "none";
-
-                socket = io();
-
-                chat_form.addEventListener("submit", (e) => {
-                    e.preventDefault();
-                    if(chat_input.value) {
-                        socket.emit("chat message", chat_input.value);
-                        const li = document.createElement("li");
-                        li.style.color = "green";
-                        li.textContent = chat_input.value;
-                        chat_input.value = "";
-                        messages.appendChild(li);
-                    }
-                });
-
-                socket.on("chat message", (message) => {
-                    const li = document.createElement("li");
-                    li.textContent = message;
-                    messages.appendChild(li);
-                });
-
-                
-                socket.onAny((eName, ...args) => {
-                    console.log("Incomming", eName, args);
-                })
-                socket.onAnyOutgoing((eName, ...args) => {
-                    console.log("Outgoing:", eName, args);
-                })
-            }
-
-        }
-        const chat_off = () => {
-            admin = {};
-            rooms_id = [];
-            messages.innerHTML = "";
-            chat_zone.style.display = "none";
-            login_zone.style.display = "block";
-            login_name.value = "";
-            login_password.value = "";
-            error_message.innerText = "";
-
-            socket.disconnect();
-            socket = {};
+        const login_zone_elms = { login_zone, login_form, login_name, login_pw, login_err_msg }
+        const chat_zone_elms = { chat_zone, msgs, chat_form, chat_inp , logout_btn, rms_lst }
+        const client_elms = {
+            ...login_zone_elms,
+            ...chat_zone_elms
         }
 
+        const client_info = {
+            origin : "http://localhost:3000",
+            admin : {},
+            rooms_cache : [],
+            loaded_user : [],
+            users_cache : [],
+            socket : {},
+            current_room_id : ""
+        };
+
+        import { chat_on } from "./chat-on.js";
         login_form.addEventListener("submit", (e) => {
             e.preventDefault();
-            if(login_name.value && login_password.value) {
+            if(login_name.value && login_pw.value) {
                 const name = login_name.value;
-                const password = login_password.value;
+                const pw = login_pw.value;
 
-                const data = {name, password};
+                const login_info = { name, pw };
 
-                fetch('http://localhost:3000/load-admin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                }).then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    } else {
-                        return response.json();
-                    }
-                }).then(data => {
-                    if(!data.error) {
-                        admin = data;
-                        chat_on();
-                    } else {
-                        error_message.innerText = data.error;
-                    }
-                    console.log(data);
-                })
-
+                load_admin(login_info)
+                    .then(data => {
+                        console.log(data);
+                        if(!data.error) {
+                            admin = data;
+                            load_client_info(client_info);
+                            chat_on(client_info, client_elms);
+                        } else {
+                            login_err_msg.innerText = data.error;
+                        }
+                    })
             }
         })
-     
+
+
+        // chat_form.addEventListener("submit", (e) => {
+        //     e.preventDefault();
+        //     if(chat_inp.value) {
+        //         const data = {
+        //             message: chat_inp.value,
+        //             room: current_room_id
+        //         }
+        //         socket.emit("chat message", data);
+        //         chat_inp.value = "";
+        //     }
+        // });
+
+        import { chat_off } from "./chat-off.js";  
         logout_btn.addEventListener("click", (e) => {
             e.preventDefault();
-            chat_off();
+            chat_off(client_info, client_elms);
         });
-
-        chat_form.addEventListener("submit", (e) => {
-            e.preventDefault();
-        })
-
 
     </script>
   </body>
