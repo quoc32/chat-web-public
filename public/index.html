@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAT-APP</title>
+</head>
+<body>
+    <div class="zone chat-zone" style="display: none;">
+        <h2 class="chat-zone-admin-name"></h2>
+        <div class="rooms">
+            <!-- <h3 class="room-name">R</h3> -->
+            <!-- <div class="room">
+                <div class="msgs-display">
+                    <ul class="msgs">
+                        <li class="msg"></li>
+                    </ul>
+                </div>
+                <form action="" class="chat-form">
+                    <input type="text" name="send-message" class="send-message">
+                    <button type="submit">Send</button>
+                </form>
+            </div> -->
+        </div>
+
+        <br>
+        <br>
+        <div class="rooms-list"></div>
+
+        <br>
+        <br>
+        <button class="logout-btn">Logout</button>
+    </div>
+    <!--  -->
+    <div class="zone login-zone">
+        <form action="" method="post" class="login-form">
+            <label for="email">Email:</label>
+            <input type="email" name="email"  class="login-input login-input-email" autocomplete="off">
+            <br>
+
+            <label for="name">Password: </label>
+            <input type="password" name="password" class="login-input login-input-password">
+            <br>
+
+            <button type="submit" class="btn login-btn">Login</button>
+        </form>
+        <p class="login-message"></p>
+        <div>
+            <h3 style="color: blue;">Chưa có tài khoản, hãy đăng kí ở đây</h3>
+            <button class="btn go-to-register">Register</button>
+        </div>
+    </div>
+    <!--  -->
+    <div class="zone register-zone" style="display: none;">
+        <form action="" method="post" class="register-form">
+            <label for="name">Name:</label>
+            <input type="text" name="name" class="register-input register-input-name" autocomplete="off">
+            <br>
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" class="register-input register-input-email" autocomplete="off">
+            <br>
+
+            <label for="password">Password: </label>
+            <input type="password" name="password" class="register-input register-input-password">
+            <br>
+
+            <button type="submit" class="btn register-btn">Register</button>
+        </form>
+        <p class="register-message"></p>
+        <div>
+            <h3 style="color: blue;">Đã có tài khoản, hãy đăng nhập ở đây</h3>
+            <button class="btn go-to-login">Login</button>
+        </div>
+    </div>
+
+    <script>
+        window.client_data = {
+            admin: null,
+            users: [],
+            rooms: [],
+            current_page: "login-page",
+            current_room: null,
+        }
+        window.chat_on = new Event('chat-on');
+        window.go_to_register = new Event('go-to-register');
+        window.go_to_login = new Event('go-to-login');
+
+        window.socket = {};
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./script/socket.js" type="module"></script>
+    <script src="./script/chat.js" type="module"></script>
+    <script src="./script/login.js" type="module"></script>
+    <script src="./script/register.js" type="module"></script>
+</body>
+</html>

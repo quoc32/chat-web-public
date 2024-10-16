@@ -1,56 +1,31 @@
 require("dotenv").config();
-const express = require("express");
-const { Server } = require("socket.io");
-const { createServer } = require("node:http");
-const { join } = require("node:path");
+const path = require('node:path');
+const http = require('node:http');
+const express = require('express');
 
 const app = express();
+const server = http.createServer(app);
+const port = process.env.SERVER_PORT;
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-const server = createServer(app);
-const io = new Server(server);
+app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.SERVER_PORT || 3000
+// Socket
+const socketIo = require('socket.io');
+const io = new socketIo.Server(server);
 
-app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "./client/index.html"));
-});
-app.get("/socket.js", (req, res) => {
-    res.sendFile(join(__dirname, "./client/socket.js"));
-});
-app.get("/load.js", (req, res) => {
-    res.sendFile(join(__dirname, "./client/load.js"));
-});
-app.get("/render.js", (req, res) => {
-    res.sendFile(join(__dirname, "./client/render.js"));
-});
-app.get("/chat-on.js", (req, res) => {
-    res.sendFile(join(__dirname, "./client/chat-on.js"));
-});
-app.get("/chat-off.js", (req, res) => {
-    res.sendFile(join(__dirname, "./client/chat-off.js"));
-});
+const { socket_handler } = require('./server-socket');
+io.on('connection', socket_handler);
 
 
-const { load_user_controller, load_rooms_controller, load_admin_controller, add_user_controller } = require("./controler");
-app.post("/load-admin", load_admin_controller);
-app.get("/load-room/:room_id", load_rooms_controller);
-app.get("/load-user/:user_id", load_user_controller);
-app.post("/add-user", add_user_controller);
+
+const { user_router } = require("./routes/user")
+app.use('/user', user_router)
+
+const { room_router } = require("./routes/room")
+app.use('/room', room_router)
 
 
-const { socket_handler } = require("./socket-handler");
-io.on("connection", socket_handler);
-
-
-const { MGclient } = require("./database");
-process.on("SIGINT", async () => {
-    console.log("Close MongoDB connection...");
-    await MGclient.close();
-    process.exit(0);
-});
-
-
-server.listen(PORT, () => {
-    console.log(`server running at http://localhost:${PORT}`);
+server.listen(port, () => {
+  console.log(`Server đang chạy tại http://localhost:${port}`);
 });
