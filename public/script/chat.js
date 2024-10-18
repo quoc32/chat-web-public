@@ -115,9 +115,9 @@ t_rooms.addEventListener('room-ready', (e) => {
     t_rooms.appendChild(room); // Thêm vào danh sách rooms_created
     rooms_created.push(room);
 
-    const h3_room_name = document.createElement('h3'); // Tạo thẻ ghi Tên room
+    const h3_room_name = document.createElement('h3'); // Tạo thẻ ghi Tên và Id room
     h3_room_name.style.color = 'red';
-    h3_room_name.innerText = `ROOM: ${room_data.name}`;
+    h3_room_name.innerText = `ROOM: ${room_data.name} (id: #${room_data._id})`;
     room.appendChild(h3_room_name);
 
     const msgs_container = document.createElement('div'); // Tạo msgs container
@@ -237,6 +237,9 @@ document.addEventListener('go-to-register', () => {
 document.addEventListener('go-to-login', () => {
     t_zone.style.display = 'none';
     client_data.current_page = 'login-page';
+
+    rooms_created = []
+    rooms_displayed = []
 
     // Ngắt kết nối socket khi thoát ra login
     socket_off();

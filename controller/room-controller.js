@@ -15,7 +15,16 @@ const get_room_controller = async (req, res) => {
 }
 
 const create_room_controller = async (req, res) => {
+    const create_data = req.body;
 
+    const new_room = new Room({
+        name: create_data.name,
+        password: create_data.password
+    })
+
+    const create_result = await new_room.save();
+
+    res.send(create_result);
 }
 
 const join_room_controller = async (req, res) => {

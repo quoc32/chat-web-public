@@ -5,8 +5,8 @@ POST http://localhost:3000/room/create-room
 Content-Type: application/json
 
 {
-    "name": "",
-    "password": ""
+    "name": "3 anh em mlem",
+    "password": "mlem-mlem"
 }
 
 ###

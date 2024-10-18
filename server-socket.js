@@ -1,3 +1,5 @@
+const Room = require("./model/Room")
+
 const socket_handler = (socket) => {
     console.log("Một client mới kết nối đến.");
 
@@ -12,6 +14,18 @@ const socket_handler = (socket) => {
     socket.on('send msg', (msg_info) => {
         const toRoom = msg_info.toRoom;
         console.log(msg_info);
+
+        // Thêm msg vào trường msgs trong room
+        const msg = {
+            sender: msg_info.sender,
+            data: msg_info.content
+        }
+        Room.findByIdAndUpdate(
+            toRoom,
+            {$push: {msgs: msg}},
+            {new: true}
+        ).then((newRoom) => {console.log(newRoom)})
+
         socket.to(toRoom).emit('receive msg', msg_info);
     })
 
