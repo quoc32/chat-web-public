@@ -60,7 +60,7 @@ t_btn.addEventListener('click', (e) => {
 })
 
 // -------------
-document.addEventListener('chat-on', () => {
+document.addEventListener('go-to-chat', () => {
     t_zone.style.display = 'none';
     t_name.value = '';
     t_email.value = '';

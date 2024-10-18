@@ -41,8 +41,8 @@ t_form.addEventListener('submit', (e) => {
             t_mes.innerText = data.error;
         } else {
             client_data.admin = data;
-            document.dispatchEvent(window.chat_on);
-            console.log(client_data);
+            document.dispatchEvent(window.go_to_chat);
+            console.log('client data:', client_data);
         }
     })
 })
@@ -58,7 +58,7 @@ t_btn_register.addEventListener('click', (e) => {
     document.dispatchEvent(go_to_register);
 })
 // --------------
-document.addEventListener('chat-on', () => {
+document.addEventListener('go-to-chat', () => {
     t_zone.style.display = 'none';
     t_email.value = '';
     t_password.value = '';

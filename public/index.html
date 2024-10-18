@@ -82,7 +82,7 @@
             current_page: "login-page",
             current_room: null,
         }
-        window.chat_on = new Event('chat-on');
+        window.go_to_chat = new Event('go-to-chat');
         window.go_to_register = new Event('go-to-register');
         window.go_to_login = new Event('go-to-login');
 
@@ -90,7 +90,7 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./script/socket.js" type="module"></script>
+    <script src="./script/client-socket.js" type="module"></script>
     <script src="./script/chat.js" type="module"></script>
     <script src="./script/login.js" type="module"></script>
     <script src="./script/register.js" type="module"></script>

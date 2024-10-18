@@ -11,6 +11,7 @@ const socket_handler = (socket) => {
 
     socket.on('send msg', (msg_info) => {
         const toRoom = msg_info.toRoom;
+        console.log(msg_info);
         socket.to(toRoom).emit('receive msg', msg_info);
     })
 

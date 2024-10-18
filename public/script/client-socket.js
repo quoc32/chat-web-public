@@ -9,7 +9,9 @@ const socket_on = () => {
 
     socket.on('receive msg', (msg_info) => {
         const receive_msg_event = new CustomEvent('receive-msg', {
-            detail: msg_info
+            detail: {
+                msg_info
+            }
         })
         document.dispatchEvent(receive_msg_event);
     })
