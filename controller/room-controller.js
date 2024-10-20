@@ -98,22 +98,22 @@ const join_room_controller = async (req, res) => {
 const leave_room_controller = async (req, res) => {
   const { user_id, room_id } = req.body;
 
-    // Xóa user id trong trường members của room
-    try {
-      const updatedRoom = await Room.findByIdAndUpdate(
-        room_id,
-        { $pull: { members: user_id } },
-        {new : true}
-      );
+    // // Xóa user id trong trường members của room
+    // try {
+    //   const updatedRoom = await Room.findByIdAndUpdate(
+    //     room_id,
+    //     { $pull: { members: user_id } },
+    //     {new : true}
+    //   );
 
-      if(!updatedRoom) {
-        return res.status(404).json({message: "Không tim thấy room có id như trên"});
-      }
+    //   if(!updatedRoom) {
+    //     return res.status(404).json({message: "Không tim thấy room có id như trên"});
+    //   }
       
-    } catch (err) {
-      console.error('Lỗi khi thêm user id vào trường members của room:', err);
-      return res.status(500);
-    }
+    // } catch (err) {
+    //   console.error('Lỗi khi thêm user id vào trường members của room:', err);
+    //   return res.status(500);
+    // }
 
     // Xóa room id trong trường rooms của user
     try {
@@ -124,7 +124,7 @@ const leave_room_controller = async (req, res) => {
       );
 
       if(!updatedUser) {
-        return res.status(404).json({message: "Không tìm thấy user nào có id như trên"});
+        return res.status(404).json({error: true, message: "Không tìm thấy user nào có id như trên"});
       }
       
     } catch (error) {

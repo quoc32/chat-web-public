@@ -1,7 +1,7 @@
 const Room = require("./model/Room")
 
 const socket_handler = (socket) => {
-    console.log("Một client mới kết nối đến.");
+    // console.log("Một client mới kết nối đến.");
 
     // Tham gia các room trực tuyến
     const rooms = socket.handshake.query.rooms;
@@ -20,7 +20,7 @@ const socket_handler = (socket) => {
     // }
     socket.on('send msg', (msg_info) => {
         const toRoom = msg_info.toRoom;
-        console.log(msg_info);
+        console.log('send msg', msg_info);
 
         // Thêm msg vào trường msgs trong room
         const msg = {
@@ -29,22 +29,34 @@ const socket_handler = (socket) => {
         }
         Room.findByIdAndUpdate(
             toRoom,
-            {$push: {msgs: msg}},
-            {new: true}
-        ).then((newRoom) => {console.log(newRoom)})
+            {$push: {msgs: msg}}
+        )
+        .then(() => {})
 
         socket.to(toRoom).emit('receive msg', msg_info);
     })
 
     // Sự kiện 'socket-join-room', khi socket mới join hoặc tạo một room trong phiên đăng nhập
     // Cấu trúc: data {
-    //      roomId (Room._id)
+    //      roomId (Room._id),
+    //      userId (User._id)
     // }
     socket.on('socket-join-room', (data) => {
+        // console.log('socket-join-room', data);
         const roomId = data.roomId;
+        const new_member_id = data.userId;
+
+        // Tham gia phòng trực tuyến đó
         socket.join(roomId);
+        console.log(`Socket joined room by join: ${roomId}`);
+
+        // Kích hoạt sự kiện socket-join-room cho các socket còn lại trong phòng
+        socket.to(roomId).emit('socket-join-room', new_member_id); // Gửi id (User._id) của member mới
+
     })
 
+
+    // disconnect
     socket.on('disconnect', () => {
         console.log('Client đã ngắt kết nối.');
     });

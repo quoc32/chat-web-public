@@ -28,6 +28,7 @@ t_form.addEventListener('submit', (e) => {
     })
         .then(res => res.json())
         .then(data => {
+            // data là Room
             if(data.error) {
                 t_message.style.color = 'red';
                 t_message.style.background = 'black';
@@ -39,7 +40,9 @@ t_form.addEventListener('submit', (e) => {
                 t_message.innerText = "Tham gia phòng thành công";
 
             }
-            // Kích hoạt sự kiện join-room-success của dom khi tham gia phòng
+            // Kích hoạt sự kiện join-room-success của dom khi tham gia phòng thành công
+            // Sự kiện sẽ render room lên rooms
+            // và User trong room đó
             const join_room_success_event = new CustomEvent('join-room-success', {
                 detail: {
                     new_room_data: data
@@ -47,7 +50,14 @@ t_form.addEventListener('submit', (e) => {
             })
             document.dispatchEvent(join_room_success_event);
             
-            console.log(data);
+            // Kích hoạt sự kiện socket-join-room của socket khi tham gia phòng thành công
+            // Sự kiện dùng để thông báo cho các user trong phòng biết có user mới tham gia room đó
+            const socket_join_room_data = {
+                roomId: id,
+                userId: joiner
+            }
+            console.log('Tham gia phòng thành công, gửi socket-join-room', socket_join_room_data);
+            socket.emit('socket-join-room', socket_join_room_data);
         })
 
     // Reset giá trị trong các thẻ input

@@ -9,13 +9,33 @@ const socket_on = () => {
         }
     });
 
+    // Sự kiện nhận Tin Nhắn
     socket.on('receive msg', (msg_info) => {
+        console.log("receive msg");
         const receive_msg_event = new CustomEvent('receive-msg', {
             detail: {
                 msg_info
             }
         })
         document.dispatchEvent(receive_msg_event);
+    })
+
+    // Sự kiện socket-join-room: khi có người dùng khác tham gia phòng chat
+    socket.on('socket-join-room', data => {
+        // Cấu trúc: data {
+        //      roomId (Room._id),
+        //      userId (User._id)
+        // }
+        const new_member = data.userId;
+        console.log('new member join', new_member);
+        // Cập nhật thông tin user mới
+        fetch(`/user/get-user/${new_member}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!client_data.users.some(user => user._id === data._id)) {
+                client_data.users.push(data);
+            }
+        });
     })
 }
 
@@ -32,12 +52,12 @@ const socket_off = () => {
 
 }
 
-// Xử lý sự kiện socket-join-room khi create một phòng hoặc join một phòng thành công
-document.addEventListener('socket-join-room', e => {
-    e.preventDefault();
-    const roomId = e.detail.roomId
-    socket.emit('socket-join-room', { roomId });
-})
+// // Xử lý sự kiện socket-join-room khi create một phòng hoặc join một phòng thành công
+// document.addEventListener('socket-join-room', e => {
+//     e.preventDefault();
+//     const roomId = e.detail.roomId;
+//     co
+// })
 
 export {
     socket_on,
