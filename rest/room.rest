@@ -5,8 +5,9 @@ POST http://localhost:3000/room/create-room
 Content-Type: application/json
 
 {
-    "name": "3 anh em mlem",
-    "password": "mlem-mlem"
+    "name": "",
+    "password": "thong-nhat-thien-ha",
+    "creater": "6714c82387583ac5ff15323b"
 }
 
 ###
@@ -14,6 +15,24 @@ POST http://localhost:3000/room/join-room
 Content-Type: application/json
 
 {
+    "user_id": "6714cbf1507c5f9cbfcc97e6",
+    "room_id": "6714cf98fa63eb443a769e16"
+}
+
+###
+POST http://localhost:3000/room/leave-room
+Content-Type: application/json
+
+{
     "user_id": "6708fbe13cd993f13fb0b373",
     "room_id": "6708ad9111ff219c7057fe36"
+}
+
+###
+POST http://localhost:3000/room/delete-room
+Content-Type: application/json
+
+{
+    "room_id": "67123dd486f75f3f96dc7dfc",
+    "password": "mlem-mlem"
 }

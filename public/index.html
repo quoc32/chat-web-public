@@ -8,27 +8,37 @@
 <body>
     <div class="zone chat-zone" style="display: none;">
         <h2 class="chat-zone-admin-name"></h2>
-        <div class="rooms">
-            <!-- <h3 class="room-name">R</h3> -->
-            <!-- <div class="room">
-                <div class="msgs-display">
-                    <ul class="msgs">
-                        <li class="msg"></li>
-                    </ul>
-                </div>
-                <form action="" class="chat-form">
-                    <input type="text" name="send-message" class="send-message">
-                    <button type="submit">Send</button>
-                </form>
-            </div> -->
-        </div>
-
-        <br>
-        <br>
+        <div class="rooms"></div>
+        <br><br>
         <div class="rooms-list"></div>
+        <br><br>
+        <details class="ex-part create-room-ex-part">
+            <summary>Create A New Room</summary>
+            <div>
+                <form action="" class="create-room-form">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" class="create-room-name-input" autocomplete="off"><br>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" class="create-room-password-input"><br>
+                    <button type="submit" class="submit-btn">Create</button>
+                </form>
+                <p class="create-room-message"></p>
+            </div>
+        </details>
 
-        <br>
-        <br>
+        <br><br>
+        <details class="ex-part join-room-ex-part">
+            <summary>Join A Room</summary>
+            <div>
+                <form action="" class="join-room-form">
+                    <label for="name">Room ID:</label>
+                    <input type="text" name="name" class="join-room-id-input" autocomplete="off"><br>
+                    <button type="submit">Join</button>
+                </form>
+                <p class="join-room-message"></p>
+            </div>
+        </details>
+        <br><br>
         <button class="logout-btn">Logout</button>
     </div>
     <!--  -->
@@ -94,5 +104,7 @@
     <script src="./script/chat.js" type="module"></script>
     <script src="./script/login.js" type="module"></script>
     <script src="./script/register.js" type="module"></script>
+    <script src="./script/create-room.js" type="module"></script>
+    <script src="./script/join-room.js" type="module"></script>
 </body>
 </html>

@@ -14,8 +14,9 @@ POST http://localhost:3000/user/register
 Content-Type: application/json
 
 {
-    "name": "nguyen van d",
-    "email": "nguyenvand@gmail.com",
-    "password": "nguyenvand"
+    "name": "Nguyễn Văn B",
+    "email": "nguyenvanb@gmail.com",
+    "password": "nguyenvanb"
 }
+
 

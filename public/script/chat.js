@@ -10,97 +10,8 @@ const t_rooms = document.querySelector('.rooms');
 const t_rooms_list = document.querySelector('.rooms-list');
 
 
-let rooms_created = [] // Chứa các room đã tạo trong dom
+let rooms_created = [] // Chứa các dom obj các room đã tạo trong dom
 let rooms_displayed = [] // Chứa id room hiện tại đang được hiện trong dom
-
-// Xử lý sự kiện 'go-to-room' cho t_rooms
-// t_rooms.addEventListener('go-to-room', (e) => {
-
-//     const current_room = e.detail.room_info;
-//     const room_data = (client_data.rooms).find(room => room._id === current_room._id);
-
-//     const h3_room_name = document.createElement('h3');
-//     h3_room_name.className = 'room-name';
-//     h3_room_name.innerText = `ROOM: ${current_room.name}`;
-//     t_rooms.appendChild(h3_room_name);
-
-//     const room = document.createElement('div');
-//     room.className = 'room';
-//     room.id = current_room._id;
-//     room.style.display = 'none';
-//     t_rooms.appendChild(room);
-
-//     if (!rooms_list.some(item => item.id === room.id)) {
-//         rooms_list.push(room);
-//     } else {
-//         return;
-//     }
-
-//     const msgs_display = document.createElement('div');
-//     msgs_display.className = 'msgs-display';
-//     room.appendChild(msgs_display);
-
-//     const msgs = document.createElement('ul');
-//     msgs.className = 'msgs';
-//     msgs_display.appendChild(msgs);
-
-//     (room_data.msgs).forEach(msg_data => {
-//         const msg = document.createElement('li');
-//         msg.className = 'msg';
-
-//         const sender_name = ((client_data.users).find(user => user._id === msg_data.sender)).name;
-//         msg.innerText = `${sender_name}: ${msg_data.data}`;
-//         msgs.appendChild(msg);
-//     })
-
-//     // form gửi tin nhắn
-//     const chat_form = document.createElement('form');
-
-//     const chat_msg = document.createElement('input');
-//     chat_form.appendChild(chat_msg);
-
-//     const send_msg_btn = document.createElement('button');
-//     send_msg_btn.innerText = 'Send';
-//     send_msg_btn.type = 'submit';
-//     chat_form.appendChild(send_msg_btn);
-
-//     chat_form.addEventListener('submit', (e) => {
-//         // Xử lý việc gửi tin nhắn
-//         e.preventDefault();
-//         if(chat_msg.value) {
-//             const msg_info = {
-//                 toRoom: current_room._id,
-//                 content: chat_msg.value,
-//                 sender: client_data.admin._id
-//             }
-
-//             const li = document.createElement('li');
-//             li.innerText = `${client_data.admin.name}: ${chat_msg.value}`;
-//             li.className = 'msg';
-//             msgs.appendChild(li);
-
-//             socket.emit('send msg', msg_info);
-//             chat_msg.value = '';
-//         }
-
-//     })
-
-//     // Xử lý khi nhận được tin nhắn (xử lý sự kiện receive-msg)
-//     document.addEventListener('receive-msg', (e) => {
-//         e.preventDefault();
-//         const msg_info = e.detail;
-
-//         if(current_room._id == msg_info.toRoom) {
-//             const li = document.createElement('li');
-//             const sender_name = ((client_data.users).find(user => user._id === msg_info.sender)).name;
-//             li.innerText = `${sender_name}: ${msg_info.content}`;
-//             li.className = 'msg';
-//             msgs.appendChild(li);
-//         }
-//     })
-
-//     t_rooms.appendChild(chat_form);
-// })
 
 
 // Xử lý sự kiện của t_rooms khi data của một room được load hoàn chỉnh: room-ready
@@ -145,7 +56,6 @@ t_rooms.addEventListener('room-ready', (e) => {
             return;
         }
 
-        console.log(msg_info);
         const msg = document.createElement('li');
         msg.className = 'msg';
 
@@ -207,6 +117,92 @@ t_rooms.addEventListener('go-to-room', (e) => {
         target_room.style.display = 'none';
         rooms_displayed = rooms_displayed.filter((el) => el != target_room.id);
     }
+})
+
+// Xử lý sự kiện khi mới tạo thành công room mới: create-room-success của document
+// Khi sự kiện kích hoạt sẽ thêm nút vào t_rooms_list và create room tương ứng
+document.addEventListener('create-room-success', (e) => {
+    e.preventDefault();
+
+    const data = e.detail.new_room_data;
+    (client_data.rooms).push(data);
+    (client_data.admin.rooms).push(data._id);
+
+    // Thêm các btn của room để kích hoạt sự kiện go-to-room khi click vào nó
+    const room_btn = document.createElement('button');
+    room_btn.innerText = data.name;
+    room_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const go_to_room_event = new CustomEvent('go-to-room', {
+            detail: {
+                room_info: {
+                    _id: data._id,
+                    name: data.name
+                }
+            }
+        })
+        t_rooms.dispatchEvent(go_to_room_event);
+    })
+    t_rooms_list.appendChild(room_btn);
+
+    // Kích hoạt sự kiện room-ready với thông tin room mới tạo
+    const room_ready_event = new CustomEvent('room-ready', {
+        detail : {
+            roomId: data._id
+        }
+    })
+    t_rooms.dispatchEvent(room_ready_event);
+
+    // Kích hoạt sự kiện socket-join-room để tham gia phòng chat trực tuyến mới tạo
+    const socket_join_room_event = new CustomEvent('socket-join-room', {
+        detail : {
+            roomId: data._id
+        }
+    })
+    document.dispatchEvent(socket_join_room_event);
+
+})
+// Xử lý sự kiện khi mới join thành công room mới: join-room-success của document
+// Khi sự kiện kích hoạt sẽ thêm nút vào t_rooms_list và create room tương ứng
+document.addEventListener('join-room-success', (e) => {
+    e.preventDefault();
+
+    const data = e.detail.new_room_data;
+    (client_data.rooms).push(data);
+    (client_data.admin.rooms).push(data._id);
+
+    // Thêm các btn của room để kích hoạt sự kiện go-to-room khi click vào nó
+    const room_btn = document.createElement('button');
+    room_btn.innerText = data.name;
+    room_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const go_to_room_event = new CustomEvent('go-to-room', {
+            detail: {
+                room_info: {
+                    _id: data._id,
+                    name: data.name
+                }
+            }
+        })
+        t_rooms.dispatchEvent(go_to_room_event);
+    })
+    t_rooms_list.appendChild(room_btn);
+
+    // Kích hoạt sự kiện room-ready với thông tin room mới tham gia
+    const room_ready_event = new CustomEvent('room-ready', {
+        detail : {
+            roomId: data._id
+        }
+    })
+    t_rooms.dispatchEvent(room_ready_event);
+
+    // Kích hoạt sự kiện socket-join-room để tham gia phòng chat trực tuyến mới tạo
+    const socket_join_room_event = new CustomEvent('socket-join-room', {
+        detail : {
+            roomId: data._id
+        }
+    })
+    document.dispatchEvent(socket_join_room_event);
 })
 
 

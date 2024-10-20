@@ -1,3 +1,5 @@
+
+// Cấu hình socket khi tham gia chat trực tuyến
 const socket_on = () => {
     console.log('socket on');
 
@@ -17,7 +19,7 @@ const socket_on = () => {
     })
 }
 
-
+// Cấu hình socket khi rời tham gia chat trực tuyến
 const socket_off = () => {
     console.log('socket off');
 
@@ -29,6 +31,13 @@ const socket_off = () => {
     socket = {};
 
 }
+
+// Xử lý sự kiện socket-join-room khi create một phòng hoặc join một phòng thành công
+document.addEventListener('socket-join-room', e => {
+    e.preventDefault();
+    const roomId = e.detail.roomId
+    socket.emit('socket-join-room', { roomId });
+})
 
 export {
     socket_on,

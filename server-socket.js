@@ -3,6 +3,7 @@ const Room = require("./model/Room")
 const socket_handler = (socket) => {
     console.log("Một client mới kết nối đến.");
 
+    // Tham gia các room trực tuyến
     const rooms = socket.handshake.query.rooms;
     if (rooms) {
         rooms.split(',').forEach((room) => {
@@ -11,6 +12,12 @@ const socket_handler = (socket) => {
         });
     }
 
+    // Sự kiện 'send msg', khi socket gửi tin
+    // Cấu trúc: msg_info {
+    //      toRoom (Room._id),
+    //      content (string),
+    //      sender (User._id)
+    // }
     socket.on('send msg', (msg_info) => {
         const toRoom = msg_info.toRoom;
         console.log(msg_info);
@@ -27,6 +34,15 @@ const socket_handler = (socket) => {
         ).then((newRoom) => {console.log(newRoom)})
 
         socket.to(toRoom).emit('receive msg', msg_info);
+    })
+
+    // Sự kiện 'socket-join-room', khi socket mới join hoặc tạo một room trong phiên đăng nhập
+    // Cấu trúc: data {
+    //      roomId (Room._id)
+    // }
+    socket.on('socket-join-room', (data) => {
+        const roomId = data.roomId;
+        socket.join(roomId);
     })
 
     socket.on('disconnect', () => {
