@@ -17,8 +17,6 @@ const io = new socketIo.Server(server);
 const { socket_handler } = require('./server-socket');
 io.on('connection', socket_handler);
 
-
-
 const { user_router } = require("./routes/user")
 app.use('/user', user_router)
 

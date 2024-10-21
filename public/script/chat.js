@@ -19,22 +19,68 @@ t_rooms.addEventListener('room-ready', (e) => {
     room.className = 'room';
     room.style.display = 'none';
     room.id = roomId;
-    t_rooms.appendChild(room); // Thêm vào danh sách rooms_created
-    rooms_created.push(room);
+    t_rooms.appendChild(room);
+    rooms_created.push(room); // Thêm vào danh sách rooms_created
 
     // Tạo thẻ ghi Tên và Id room
-    const h3_room_name = document.createElement('h3'); 
-    h3_room_name.style.color = 'red';
-    h3_room_name.innerText = `ROOM: ${room_data.name}`;
-    room.appendChild(h3_room_name);
+    const room_info_container = document.createElement('div');
+    room_info_container.className = 'room-info-container';
+    room_info_container.style.color = 'red';
+    const room_name_h3 = document.createElement('h3');
+    room_name_h3.innerText = `ROOM: ${room_data.name}`
+    room_name_h3.className = 'room-name-header';
+    room.appendChild(room_info_container);
+    room_info_container.appendChild(room_name_h3);
+
+    // Thêm nút thu nhỏ phòng
+    const temp_div_1 = document.createElement('div');
+    room_info_container.appendChild(temp_div_1);
+
+    const mini_btn = document.createElement('button');
+    mini_btn.className = 'mini-btn';
+    mini_btn.innerHTML = "<i class='bx bx-checkbox-minus' ></i>";
+
+    mini_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const go_to_room_event = new CustomEvent('go-to-room', {
+            detail: {
+                room_info: {
+                    _id: roomId,
+                    name: room_data.name
+                }
+            }
+        })
+        t_rooms.dispatchEvent(go_to_room_event);
+    })
+    temp_div_1.appendChild(mini_btn);
+
+    // Thêm nút call-video
+    const call_video_btn = document.createElement('button');
+    call_video_btn.className = 'call-video-btn';
+    call_video_btn.innerHTML = "<i class='bx bx-video'></i>";
+
+    call_video_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const go_to_room_event = new CustomEvent('turn-on-video-call', {
+            detail: {
+                data: "call-data" // -----------------
+            }
+        })
+        document.dispatchEvent(go_to_room_event);
+    })
+    temp_div_1.appendChild(call_video_btn);
+
+    // Cấu hình để kéo thả room
+    const move_room_config_event = new CustomEvent('move-room-config');
+    document.dispatchEvent(move_room_config_event);
 
     // Tạo thẻ detail chứa các thông tin của phòng và các tiện ích khác (leave-room, copy id)
     const room_detail_info = document.createElement('details');
     room_detail_info.className = 'room-detail-info';
-    h3_room_name.appendChild(room_detail_info);
+    temp_div_1.appendChild(room_detail_info);
 
     const room_detail_info_summary = document.createElement('summary'); // Summary của details
-    room_detail_info_summary.innerText = 'Detail...';
+    room_detail_info_summary.innerHTML = "<i class='bx bxs-grid' ></i>";
     room_detail_info.appendChild(room_detail_info_summary);
 
     const room_id_span = document.createElement('span'); // Thẻ chứa thông tin id của room
@@ -60,12 +106,12 @@ t_rooms.addEventListener('room-ready', (e) => {
         });
     })
     // Thêm nút leave-room
+    // Nhấn vào sẽ kích hoạt sự kiện leave-room của dom
     const leave_room_btn = document.createElement('button'); 
     leave_room_btn.innerText = 'Leave Room';
     detail_content.appendChild(leave_room_btn)
     leave_room_btn.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log('leave');
         const leave_room_event = new CustomEvent('leave-room', {
             detail: {
                          roomId: roomId,
@@ -117,17 +163,19 @@ t_rooms.addEventListener('room-ready', (e) => {
     room.appendChild(chat_form);
 
     const chat_msg = document.createElement('input');
+    chat_msg.placeholder = 'Type message here..';
+    chat_msg.className = 'chat-msg-input';
     chat_form.appendChild(chat_msg);
 
     const send_msg_btn = document.createElement('button');
-    send_msg_btn.innerText = 'Send';
+    send_msg_btn.innerHTML = "<i class='bx bx-send'></i>";
     send_msg_btn.type = 'submit';
     chat_form.appendChild(send_msg_btn);
 
     chat_form.addEventListener('submit', (e) => {
         // Xử lý việc gửi tin nhắn
         e.preventDefault();
-        console.log('Send messgae');
+        // console.log('Send messgae');
         if(chat_msg.value) {
             const msg_info = {
                 toRoom: room_data._id,
@@ -178,7 +226,7 @@ document.addEventListener('create-room-success', (e) => {
     // Thêm các btn của room để kích hoạt sự kiện go-to-room khi click vào nó
     const room_btn = document.createElement('button');
     room_btn.innerText = data.name;
-    room_btn.className = data._id + '-room-btn';
+    room_btn.id = data._id + '-room-btn';
     room_btn.addEventListener('click', (e) => {
         e.preventDefault();
         const go_to_room_event = new CustomEvent('go-to-room', {
@@ -247,7 +295,7 @@ document.addEventListener('join-room-success', (e) => {
     // Thêm các btn của room để kích hoạt sự kiện go-to-room khi click vào nó
     const room_btn = document.createElement('button');
     room_btn.innerText = data.name;
-    room_btn.className = data._id + '-room-btn';
+    room_btn.id = data._id + '-room-btn';
     room_btn.addEventListener('click', (e) => {
         e.preventDefault();
         const go_to_room_event = new CustomEvent('go-to-room', {
@@ -262,6 +310,9 @@ document.addEventListener('join-room-success', (e) => {
     })
     t_rooms_list.appendChild(room_btn);
 })
+// // Xử lý sự kiện khi mới leave thành công khỏi room: leave-room-success của document
+// // Khi sự kiện kích hoạt Ở ĐÂY sẽ ẩn room và nút room tương ứng
+// document.addEventListener('leave-room-success', (e) => {})
 
 
 // Xử lý khi nhấn nút Logout
@@ -319,7 +370,7 @@ document.addEventListener('go-to-chat', async () => {
                     // Thêm các btn của room để kích hoạt sự kiện go-to-room khi click vào nó
                     const room_btn = document.createElement('button');
                     room_btn.innerText = data.name;
-                    room_btn.className = data._id + '-room-btn';
+                    room_btn.id = data._id + '-room-btn';
                     room_btn.addEventListener('click', (e) => {
                         e.preventDefault();
                         const go_to_room_event = new CustomEvent('go-to-room', {

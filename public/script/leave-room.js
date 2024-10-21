@@ -25,9 +25,12 @@ document.addEventListener('leave-room', (e) => {
                 return;
             }
 
-            console.log('leave Thành công');
             const target_room = document.getElementById(room_id);
             target_room.style.display = 'none';
+
+
+            const target_room_btn = document.getElementById(`${room_id}-room-btn`);
+            target_room_btn.style.display = 'none';
         })
 
 })

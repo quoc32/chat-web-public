@@ -1,0 +1,205 @@
+.chat-zone {
+    background-color: blanchedalmond;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    padding: 1rem;
+}
+
+.chat-zone li {
+    user-select: text;
+    padding: 0.5rem;
+}
+
+.chat-zone div details summary::-webkit-details-marker {
+    display: none;
+}
+
+.room {
+    background-color: pink;
+    margin: 1rem;
+    max-width: 30rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+}
+
+.room .room-name-header {
+    cursor: grab;
+    padding: 1rem;
+    padding-top: 0.5rem;
+    width: 20rem;
+}
+.room .room-name-header:active {
+    cursor: grabbing;
+}
+.room-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mini-btn, .call-video-btn {
+    font-size: 1rem;
+    border: none;
+    background-color: white;
+    margin-left: 0.5rem;
+}
+.mini-btn:hover, .call-video-btn:hover {
+    background-color: rgb(74, 53, 233);
+    color: white;
+}
+.mini-btn:active, .call-video-btn:active {
+    background-color: rgb(13, 11, 30);
+    color: white;
+}
+
+.room-detail-info {
+    margin: 0.5rem;
+    display: inline;
+}
+.room-detail-info[open] {
+    background-color: gray;
+    margin: 0.5rem;
+    display: inline;
+    padding: 1rem;
+}
+.room-detail-info[open] span {
+    color: rgb(82, 230, 230);
+}
+
+.detail-content button:nth-of-type(1) {
+    display: block;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+}
+.detail-content button:nth-of-type(1):hover {
+    background-color: greenyellow;
+}
+.detail-content button:nth-of-type(2) {
+    display: block;
+    padding: 0.5rem;
+    background-color: yellow;
+    font-weight: bold;
+}
+.detail-content button:nth-of-type(2):hover {
+    background-color: red;
+}
+
+.room-detail-info summary {
+    background-color: white;
+}
+
+.msgs {
+    list-style: none;
+    background-color: green;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    height: 20rem;
+    overflow-y: scroll;
+}
+.msg {
+    margin: 0.5rem;
+    background-color: black;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    color: white;
+    border-radius: 1rem;
+}
+.msgs::-webkit-scrollbar {
+    width: 5px; /* Chiều rộng của thanh cuộn */
+}
+.msgs::-webkit-scrollbar:hover {
+    width: 10px;
+}
+
+.msgs::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Màu nền của track */
+}
+
+.msgs::-webkit-scrollbar-thumb {
+    background: gray; /* Màu của thanh cuộn */
+    border-radius: 10px; /* Bo góc thanh cuộn */
+}
+
+.msgs::-webkit-scrollbar-thumb:hover {
+    background: black; /* Màu khi hover trên thanh cuộn */
+}
+
+summary {
+    list-style: none;
+    cursor: pointer;
+    color: black;
+}
+summary:hover {
+    background-color: gray;
+    color: white;
+}
+
+.create-room-ex-part {
+    background-color: brown;
+    color: white;
+    margin: 1rem;
+    display: inline;
+    padding: 0.5rem;
+}
+
+.join-room-ex-part {
+    background-color: blue;
+    color: white;
+    margin: 1rem;
+    display: inline;
+    padding: 0.5rem;
+}
+
+.room form {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1rem;
+}
+.room form input {
+    flex-flow: 1;
+    padding: 0.5rem;
+    width: 100%;
+}
+.room form i {
+    padding: 0.5rem;
+    font-size: 2rem;
+    margin-left: 3px;
+}
+.room form button:hover {
+    background-color: rgb(83, 83, 237);
+    color: white;
+}
+.room-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+}
+.rooms-list button {
+    margin: 10px;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.rooms-list button:hover {
+    background-color: #2ee26a;
+}
+.logout-btn {
+    font-weight: bold;
+    padding: 0.5rem;
+}
+.logout-btn:hover {
+    background-color: red;
+}

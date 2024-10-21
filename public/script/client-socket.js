@@ -1,7 +1,7 @@
 
 // Cấu hình socket khi tham gia chat trực tuyến
 const socket_on = () => {
-    console.log('socket on');
+    // console.log('socket on');
 
     socket = io({
         query: {
@@ -21,13 +21,14 @@ const socket_on = () => {
     })
 
     // Sự kiện socket-join-room: khi có người dùng khác tham gia phòng chat
-    socket.on('socket-join-room', data => {
+    socket.on('socket-join-room', (data) => {
         // Cấu trúc: data {
         //      roomId (Room._id),
         //      userId (User._id)
         // }
+        // console.log('socket-join-room data:', data);
         const new_member = data.userId;
-        console.log('new member join', new_member);
+        // console.log('new member join', new_member);
         // Cập nhật thông tin user mới
         fetch(`/user/get-user/${new_member}`)
         .then(res => res.json())

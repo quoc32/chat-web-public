@@ -1,0 +1,38 @@
+.register-zone {
+    background-color: purple;
+    color: white;
+    padding: 2%;
+    border-radius: 3%;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.register-zone h1 {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.register-zone .input-box {
+    display: flex;
+    width: 100%;
+    padding: 5px;
+}
+
+.register-zone .input-box input {
+    width: 100%;
+}
+
+.register-zone .input-box i {
+    font-size: 2rem;
+    position: relative;
+}
+
+.register-form div {
+    display: flex;
+    justify-content: center;
+}
+
+.register-btn {
+    width: 70%;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}

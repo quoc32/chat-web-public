@@ -4,82 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHAT-APP</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style/login.css">
+    <link rel="stylesheet" href="./style/register.css">
+    <link rel="stylesheet" href="./style/chat.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
     <div class="zone chat-zone" style="display: none;">
         <h2 class="chat-zone-admin-name"></h2>
         <div class="rooms"></div>
-        <br><br>
+        
         <div class="rooms-list"></div>
-        <br><br>
-        <details class="ex-part create-room-ex-part">
-            <summary>Create A New Room</summary>
-            <div>
-                <form action="" class="create-room-form">
-                    <label for="name">Name:</label>
-                    <input type="text" name="name" class="create-room-name-input" autocomplete="off"><br>
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" class="create-room-password-input"><br>
-                    <button type="submit" class="submit-btn">Create</button>
-                </form>
-                <p class="create-room-message"></p>
-            </div>
-        </details>
+        
+        <div>
+            <details class="ex-part create-room-ex-part">
+                <summary>Create A New Room</summary>
+                <div>
+                    <form action="" class="create-room-form">
+                        <label for="name">Name:</label>
+                        <input type="text" name="name" class="create-room-name-input" autocomplete="off"><br>
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" class="create-room-password-input"><br>
+                        <button type="submit" class="submit-btn">Create</button>
+                    </form>
+                    <p class="create-room-message"></p>
+                </div>
+            </details>
+        </div>
 
-        <br><br>
-        <details class="ex-part join-room-ex-part">
-            <summary>Join A Room</summary>
-            <div>
-                <form action="" class="join-room-form">
-                    <label for="name">Room ID:</label>
-                    <input type="text" name="name" class="join-room-id-input" autocomplete="off"><br>
-                    <button type="submit">Join</button>
-                </form>
-                <p class="join-room-message"></p>
-            </div>
-        </details>
-        <br><br>
+        <div>
+            <details class="ex-part join-room-ex-part">
+                <summary>Join A Room</summary>
+                <div>
+                    <form action="" class="join-room-form">
+                        <label for="name">Room ID:</label>
+                        <input type="text" name="name" class="join-room-id-input" autocomplete="off"><br>
+                        <button type="submit">Join</button>
+                    </form>
+                    <p class="join-room-message"></p>
+                </div>
+            </details>
+        </div>
+        
         <button class="logout-btn">Logout</button>
     </div>
+
     <!--  -->
     <div class="zone login-zone">
         <form action="" method="post" class="login-form">
-            <label for="email">Email:</label>
-            <input type="email" name="email"  class="login-input login-input-email" autocomplete="off">
-            <br>
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="email" name="email"  class="login-input login-input-email" autocomplete="off" placeholder="Email" required>
+                <i class='bx bx-user-circle'></i>
+            </div>
+            
+            <div class="input-box">
+                <input type="password" name="password" class="login-input login-input-password" placeholder="Password" required>
+                <i class='bx bxs-lock' ></i>
+            </div>
+            
 
-            <label for="name">Password: </label>
-            <input type="password" name="password" class="login-input login-input-password">
-            <br>
-
-            <button type="submit" class="btn login-btn">Login</button>
+            <div><button type="submit" class="btn login-btn">Login</button></div>
         </form>
         <p class="login-message"></p>
         <div>
-            <h3 style="color: blue;">Chưa có tài khoản, hãy đăng kí ở đây</h3>
+            <span>Chưa có tài khoản, hãy đăng kí ở đây</span>
             <button class="btn go-to-register">Register</button>
         </div>
     </div>
     <!--  -->
     <div class="zone register-zone" style="display: none;">
         <form action="" method="post" class="register-form">
-            <label for="name">Name:</label>
-            <input type="text" name="name" class="register-input register-input-name" autocomplete="off">
-            <br>
-
-            <label for="email">Email:</label>
-            <input type="email" name="email" class="register-input register-input-email" autocomplete="off">
-            <br>
-
-            <label for="password">Password: </label>
-            <input type="password" name="password" class="register-input register-input-password">
-            <br>
-
-            <button type="submit" class="btn register-btn">Register</button>
+            <h1>Register</h1>
+            <div class="input-box">
+                <input type="text" name="name" class="register-input register-input-name" autocomplete="off" placeholder="Name" required>
+                <i class='bx bxs-edit-alt'></i>
+            </div>
+            
+            <div class="input-box">
+                <input type="email" name="email" class="register-input register-input-email" autocomplete="off" placeholder="Email" required>
+                <i class='bx bxs-envelope'></i>
+            </div>
+            
+            <div class="input-box">
+                <input type="password" name="password" class="register-input register-input-password" placeholder="Password" required>
+                <i class='bx bxs-lock' ></i>
+                
+            </div>
+            <div><button type="submit" class="btn register-btn">Register</button></div>
         </form>
         <p class="register-message"></p>
         <div>
-            <h3 style="color: blue;">Đã có tài khoản, hãy đăng nhập ở đây</h3>
+            <span>Đã có tài khoản, hãy đăng nhập ở đây</span>
             <button class="btn go-to-login">Login</button>
         </div>
     </div>
@@ -107,5 +125,7 @@
     <script src="./script/create-room.js" type="module"></script>
     <script src="./script/join-room.js" type="module"></script>
     <script src="./script/leave-room.js" type="module"></script>
+    <script src="./script/move-room.js" type="module"></script>
+    <script src="./script/video-call.js" type="module"></script>
 </body>
 </html>

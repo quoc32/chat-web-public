@@ -44,14 +44,13 @@ const socket_handler = (socket) => {
     socket.on('socket-join-room', (data) => {
         // console.log('socket-join-room', data);
         const roomId = data.roomId;
-        const new_member_id = data.userId;
 
         // Tham gia phòng trực tuyến đó
         socket.join(roomId);
         console.log(`Socket joined room by join: ${roomId}`);
 
         // Kích hoạt sự kiện socket-join-room cho các socket còn lại trong phòng
-        socket.to(roomId).emit('socket-join-room', new_member_id); // Gửi id (User._id) của member mới
+        socket.to(roomId).emit('socket-join-room', data); // Gửi id (User._id) của member mới
 
     })
 
