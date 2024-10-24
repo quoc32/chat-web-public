@@ -29,7 +29,7 @@ t_form.addEventListener('submit', (e) => {
         return;
     }
 
-    fetch('http://localhost:3000/user/register', {
+    fetch('/user/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
